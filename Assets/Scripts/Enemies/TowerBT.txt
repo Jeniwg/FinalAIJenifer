@@ -1,0 +1,10 @@
+tree "Panic"
+	Succeed
+
+tree "Normal"
+	fallback
+		BeAlert
+
+tree "Chase"
+	fallback
+		InAlert

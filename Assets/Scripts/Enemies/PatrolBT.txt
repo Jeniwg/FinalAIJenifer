@@ -1,0 +1,11 @@
+tree "Normal"
+	fallback
+		MoveRandom
+
+tree "Panic"
+	sequence
+		Panic
+
+tree "Chase"
+	fallback
+		Chase

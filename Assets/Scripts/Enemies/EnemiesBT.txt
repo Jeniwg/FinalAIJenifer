@@ -1,0 +1,23 @@
+tree("Root")
+	fallback
+		sequence
+			fallback
+				SeePlayer
+			tree "Chase"
+		tree "AwareOfPlayer"
+		tree "Normal"
+
+tree "AwareOfPlayer"
+	fallback
+		sequence
+			while
+				not SeePlayer
+				AwareOfPlayer
+			while
+				sequence
+					not SeePlayer
+					not AlertOverride
+				race
+					Wait 10.0
+					repeat
+						tree "Panic"

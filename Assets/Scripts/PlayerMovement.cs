@@ -16,6 +16,9 @@ public class PlayerMovement : MonoBehaviour
     private int playerLife = 20;
     private float lastBullet;
     private Vector3 inputMovement;
+    private bool canOpenDoor = true;
+    [SerializeField]
+    private BlockDoor blockDoor;
 
     private void Start()
     {
@@ -51,17 +54,22 @@ public class PlayerMovement : MonoBehaviour
 
         }
 
+        if(playerLife <= 0)
+        {
+            Debug.Log("U DEAD!");
+        }
+
     }
 
     private void FixedUpdate()
     {
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit;
-
+        canOpenDoor = blockDoor.CanOpenDoors;
         Debug.DrawRay(transform.position, transform.forward, Color.yellow);
-        if (Physics.Raycast(ray, out hit, 1))
+        if (Physics.Raycast(ray, out hit, 2))
         {
-            if (hit.transform.tag == "Door" && Input.GetKeyDown(KeyCode.E))
+            if (hit.transform.tag == "Door" && Input.GetKeyDown(KeyCode.E) && canOpenDoor == true)
             {
                 Debug.Log("Open");
                 Animator anim = hit.collider.gameObject.GetComponentInParent<Animator>();
@@ -80,7 +88,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void Shoot()
     {
-        Instantiate(bullet, bulletEmitter.transform.position, transform.rotation);
+        GameObject obj = Instantiate(bullet, bulletEmitter.transform.position, transform.rotation);
+        obj.tag = "PlayerBullet";
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "Enemy")
+        {
+            playerLife -= 2;
+        }
     }
 
 }
