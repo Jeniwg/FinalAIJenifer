@@ -10,20 +10,14 @@ public class BlockDoor : MonoBehaviour
     void OnEnable()
     {
         EventManager.alarm += CloseDoors;
+        EventManager.unlockAlarm += OpenDoors;
     }
 
     void OnDisable()
     {
         gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
         EventManager.alarm -= CloseDoors;
-    }
-
-    private void Update()
-    {
-        if(CanOpenDoors == true)
-        {
-            gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
-        }
+        EventManager.unlockAlarm -= OpenDoors;
     }
 
     private void CloseDoors()
@@ -31,5 +25,11 @@ public class BlockDoor : MonoBehaviour
         CanOpenDoors = false;
         gameObject.GetComponentInChildren<Renderer>().material.color = Color.red;
         animator.SetBool("isDoorOpen", false);
+    }
+
+    private void OpenDoors()
+    {
+        CanOpenDoors = true;
+        gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
     }
 }

@@ -18,6 +18,6 @@ tree "AwareOfPlayer"
 					not SeePlayer
 					not AlertOverride
 				race
-					Wait 10.0
+					Wait 15.0
 					repeat
 						tree "Panic"

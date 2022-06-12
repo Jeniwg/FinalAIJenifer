@@ -11,7 +11,7 @@ public class EnemiesTasksScript : MonoBehaviour
     [SerializeField]
     private NavMeshAgent agent;
     [SerializeField]
-    private int roamRadius = 10;
+    private int roamRadius = 5;
     [SerializeField]
     private bool alertOverr = false;
     [SerializeField]
@@ -28,7 +28,12 @@ public class EnemiesTasksScript : MonoBehaviour
     private Vector3 InicialPos;
     private RaycastHit hit;
     private Vector3 playerLastPosition;
+    private Vector3 randomPosition;
     private bool Aware = false;
+    private bool canChange = true;
+    private Vector3 oldPos;
+    private float positionBlockTimer = 2f;
+
 
 
     private void Start()
@@ -36,10 +41,12 @@ public class EnemiesTasksScript : MonoBehaviour
         agent = gameObject.GetComponent<NavMeshAgent>();
         InicialPos = agent.transform.position;
         lastBullet = Time.time;
+        oldPos = agent.transform.position;
     }
 
     private void Update()
     {
+       // Debug.Log(alertOverr);
         if (life <= 0)
         {
             Destroy(this.gameObject);
@@ -48,18 +55,27 @@ public class EnemiesTasksScript : MonoBehaviour
     void OnEnable()
     {
         EventManager.alarm += GetPlayer;
+        EventManager.forget += ForgetPlayer;
     }
 
     void OnDisable()
     {
         EventManager.alarm -= GetPlayer;
+        EventManager.forget -= ForgetPlayer;
     }
 
     private void GetPlayer()
     {
+        
         alertOverr = true;
         playerLastPosition = player.transform.position;
         this.Aware = true;
+    }
+
+    private void ForgetPlayer()
+    {
+        Debug.Log("FORGETPLAYER");
+        alertOverr = false;
     }
 
     [Task]
@@ -70,6 +86,7 @@ public class EnemiesTasksScript : MonoBehaviour
         if (Physics.Raycast(gameObject.transform.position, rayDirection, out hit) && hit.collider.CompareTag("Player"))
         {
             playerLastPosition = player.transform.position;
+            StopCoroutine(Change());
             Aware = true;
             return true;
         }
@@ -77,17 +94,14 @@ public class EnemiesTasksScript : MonoBehaviour
     }
 
     [Task]
-    private void AlertOverride()
+    private bool AlertOverride()
     {
         if (alertOverr)
         {
-            alertOverr = false;
-            Task.current.Succeed();
+            //alertOverr = false;
+            return true;
         }
-        else
-        {
-            Task.current.Fail();
-        }
+        return false;
     }
 
     [Task]
@@ -96,7 +110,7 @@ public class EnemiesTasksScript : MonoBehaviour
         if (Aware)
         {
             agent.destination = playerLastPosition;
-            if (Vector3.Distance(agent.transform.position, playerLastPosition) <= 0.5)
+            if (Vector3.Distance(agent.transform.position, playerLastPosition) <= 1)
             {
                 alertOverr = false;
                 Aware = false;
@@ -112,11 +126,53 @@ public class EnemiesTasksScript : MonoBehaviour
     }
 
     [Task]
+    private bool Coiso()
+    {
+        if (Aware)
+        {
+            change = true;
+            return true;
+        }
+
+        return false;
+
+    }
+
+    [Task]
     private void MoveRandom()
     {
-        Vector3 randomPosition = RandomNavSphere(agent.transform.position, 15f, -1);
+        Aware = false;
+        RandomPos();
         agent.destination = randomPosition;
+        if (Vector3.Distance(agent.transform.position, randomPosition) <= 1f)
+        {
+            canChange = true;
+        }
+
+        if (agent.transform.position == oldPos)
+        {
+            positionBlockTimer -= Time.deltaTime;
+            if (positionBlockTimer <= 0)
+            {
+                canChange = true;
+                positionBlockTimer = 2f;
+            }
+        }
+        oldPos = agent.transform.position;
         Task.current.Succeed();
+    }
+
+    private void RandomPos()
+    {
+        if (canChange)
+        {
+            randomPosition = RandomNavSphere(agent.transform.position, 8f, -1);
+            if (randomPosition == new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity))
+            {
+                RandomPos();
+            }
+            canChange = false;
+        }
     }
 
     [Task]
@@ -156,27 +212,51 @@ public class EnemiesTasksScript : MonoBehaviour
         Task.current.Succeed();
     }
 
+    private bool change = true;
     [Task]
     private void Panic()
     {
-        Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
+        /*Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
         randomDirection += playerLastPosition;
         NavMeshHit hit;
         NavMesh.SamplePosition(randomDirection, out hit, roamRadius, 1);
         Vector3 finalPosition = hit.position;
-        agent.destination = finalPosition;
+        agent.destination = finalPosition;*/
+
+        Vector3 randomDirection = Random.insideUnitSphere * roamRadius + playerLastPosition;
+        agent.destination = randomDirection;
+
+        if(change)
+        {
+            change = false;
+            StartCoroutine("Change");
+        }
+    }
+    private IEnumerator Change()
+    {
+        yield return new WaitForSeconds(15);
+
+        Aware = false;
     }
 
     [Task]
     private void BeAlert()
     {
         agent.destination = InicialPos;
-        door.CanOpenDoors = true;
+        EventManager.unlock = true;
+        alertOverr = false;
         if (SeePlayer())
         {
             EventManager.go = true;
             Task.current.Succeed();
         }
+    }
+
+    [Task]
+    private void WaitToOpenDoor()
+    {
+        agent.destination = InicialPos;
+        EventManager.forgetIt = true;
     }
 
     private Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)

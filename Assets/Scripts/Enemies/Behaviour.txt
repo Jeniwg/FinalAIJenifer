@@ -1,0 +1,30 @@
+tree("Root")
+	fallback
+		sequence
+			SeePlayer
+			Chase
+		sequence
+			AlertOverride
+			Chase
+		sequence
+			Coiso
+			not SeePlayer
+			tree "Panic"
+		sequence
+			not SeePlayer
+			not Coiso
+			MoveRandom
+
+tree "Panic"
+	fallback
+		sequence
+			sequence
+				not SeePlayer
+				Coiso
+				not AlertOverride
+			while 
+				not SeePlayer
+				race
+					Wait 15.0
+					repeat
+						Panic

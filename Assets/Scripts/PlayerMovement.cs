@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.LookAt(new Vector3(mousePos.x, transform.position.y, mousePos.z));
 
-        inputMovement = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        inputMovement = new Vector3(Input.GetAxis("Vertical"), 0, Input.GetAxis("Horizontal"));
 
 
         if (Input.GetKey(KeyCode.LeftShift))

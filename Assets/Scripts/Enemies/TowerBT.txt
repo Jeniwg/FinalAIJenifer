@@ -1,5 +1,6 @@
 tree "Panic"
-	Succeed
+	fallback
+		WaitToOpenDoor
 
 tree "Normal"
 	fallback
