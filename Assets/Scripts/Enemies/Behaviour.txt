@@ -7,12 +7,12 @@ tree("Root")
 			AlertOverride
 			Chase
 		sequence
-			Coiso
+			Aware
 			not SeePlayer
 			tree "Panic"
 		sequence
 			not SeePlayer
-			not Coiso
+			not Aware
 			MoveRandom
 
 tree "Panic"
@@ -20,7 +20,7 @@ tree "Panic"
 		sequence
 			sequence
 				not SeePlayer
-				Coiso
+				Aware
 				not AlertOverride
 			while 
 				not SeePlayer

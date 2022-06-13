@@ -15,7 +15,6 @@ public class BlockDoor : MonoBehaviour
 
     void OnDisable()
     {
-        gameObject.GetComponentInChildren<Renderer>().material.color = Color.green;
         EventManager.alarm -= CloseDoors;
         EventManager.unlockAlarm -= OpenDoors;
     }

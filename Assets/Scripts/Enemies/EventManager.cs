@@ -11,20 +11,20 @@ public class EventManager : MonoBehaviour
     public delegate void UnlockAlarm();
     public static event UnlockAlarm unlockAlarm;
 
-    [SerializeField]
     public static bool go = false;
     public static bool unlock = false;
     public static bool forgetIt = false;
 
     private void Update()
     {
-        Debug.Log("GO: " + go);
-        //Debug.Log("UNLOCK: " + unlock);
+        //Debug.Log("GO: " + go);
+        //Debug.Log("FORGETit: " + forgetIt);
         if (go)
         {
+            alarm();
             unlock = false;
             go = false;
-            alarm();
+            
         }
 
         if(forgetIt)

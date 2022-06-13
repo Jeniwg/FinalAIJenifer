@@ -101,7 +101,7 @@ public class Player : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, transform.forward);
         RaycastHit hit = new RaycastHit();
-        //canOpenDoor = blockDoor.CanOpenDoors;
+        canOpenDoor = blockDoor.CanOpenDoors;
         Debug.DrawRay(transform.position, transform.forward, Color.yellow);
         if (Physics.Raycast(ray, out hit, 3))
         {

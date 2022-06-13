@@ -29,7 +29,7 @@ public class EnemiesTasksScript : MonoBehaviour
     private RaycastHit hit;
     private Vector3 playerLastPosition;
     private Vector3 randomPosition;
-    private bool Aware = false;
+    private bool aware = false;
     private bool canChange = true;
     private Vector3 oldPos;
     private float positionBlockTimer = 2f;
@@ -46,7 +46,7 @@ public class EnemiesTasksScript : MonoBehaviour
 
     private void Update()
     {
-       // Debug.Log(alertOverr);
+        // Debug.Log(alertOverr);
         if (life <= 0)
         {
             Destroy(this.gameObject);
@@ -66,15 +66,14 @@ public class EnemiesTasksScript : MonoBehaviour
 
     private void GetPlayer()
     {
-        
         alertOverr = true;
         playerLastPosition = player.transform.position;
-        this.Aware = true;
+        this.aware = true;
     }
 
     private void ForgetPlayer()
     {
-        Debug.Log("FORGETPLAYER");
+        //Debug.Log("FORGETPLAYER");
         alertOverr = false;
     }
 
@@ -87,7 +86,7 @@ public class EnemiesTasksScript : MonoBehaviour
         {
             playerLastPosition = player.transform.position;
             StopCoroutine(Change());
-            Aware = true;
+            aware = true;
             return true;
         }
         return false;
@@ -105,30 +104,9 @@ public class EnemiesTasksScript : MonoBehaviour
     }
 
     [Task]
-    private void AwareOfPlayer()
+    private bool Aware()
     {
-        if (Aware)
-        {
-            agent.destination = playerLastPosition;
-            if (Vector3.Distance(agent.transform.position, playerLastPosition) <= 1)
-            {
-                alertOverr = false;
-                Aware = false;
-                Task.current.Succeed();
-            }
-        }
-        else
-        {
-            Aware = false;
-            Task.current.Fail();
-        }
-
-    }
-
-    [Task]
-    private bool Coiso()
-    {
-        if (Aware)
+        if (aware)
         {
             change = true;
             return true;
@@ -141,7 +119,7 @@ public class EnemiesTasksScript : MonoBehaviour
     [Task]
     private void MoveRandom()
     {
-        Aware = false;
+        aware = false;
         RandomPos();
         agent.destination = randomPosition;
         if (Vector3.Distance(agent.transform.position, randomPosition) <= 1f)
@@ -203,6 +181,7 @@ public class EnemiesTasksScript : MonoBehaviour
         aux2.y = 0;
         transform.forward = aux1 - aux2;
         agent.destination = playerLastPosition;
+        Debug.Log("ININALERT");
         EventManager.go = true;
         if ((Time.time - lastBullet > bulletRate))
         {
@@ -212,21 +191,26 @@ public class EnemiesTasksScript : MonoBehaviour
         Task.current.Succeed();
     }
 
-    private bool change = true;
+    private bool change = false;
+    private bool check = false;
     [Task]
     private void Panic()
     {
-        /*Vector3 randomDirection = Random.insideUnitSphere * roamRadius;
-        randomDirection += playerLastPosition;
-        NavMeshHit hit;
-        NavMesh.SamplePosition(randomDirection, out hit, roamRadius, 1);
-        Vector3 finalPosition = hit.position;
-        agent.destination = finalPosition;*/
+        agent.destination = playerLastPosition;
+        if (Vector3.Distance(agent.transform.position, playerLastPosition) <= 1f)
+        {
+            check = true;
+            change = true;
+        }
 
-        Vector3 randomDirection = Random.insideUnitSphere * roamRadius + playerLastPosition;
-        agent.destination = randomDirection;
+        if (check)
+        {
+            Vector3 randomDirection = Random.insideUnitSphere * roamRadius + playerLastPosition;
+            agent.destination = randomDirection;
+        }
 
-        if(change)
+
+        if (change)
         {
             change = false;
             StartCoroutine("Change");
@@ -236,28 +220,38 @@ public class EnemiesTasksScript : MonoBehaviour
     {
         yield return new WaitForSeconds(15);
 
-        Aware = false;
+        check = false;
+        aware = false;
     }
 
     [Task]
     private void BeAlert()
     {
         agent.destination = InicialPos;
-        EventManager.unlock = true;
+        EventManager.forgetIt = true;
         alertOverr = false;
         if (SeePlayer())
         {
-            EventManager.go = true;
+            Debug.Log("INBEALERT");
             Task.current.Succeed();
         }
+        Task.current.Fail();
     }
 
     [Task]
-    private void WaitToOpenDoor()
+    private void TurnOffAlarm()
+    {
+        EventManager.unlock = true;
+        aware = false;
+    }
+
+    [Task]
+    private void GoBack()
     {
         agent.destination = InicialPos;
-        EventManager.forgetIt = true;
+        Task.current.Succeed();
     }
+   
 
     private Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)
     {

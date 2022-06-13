@@ -1,11 +1,21 @@
-tree "Panic"
+tree("Root")
 	fallback
-		WaitToOpenDoor
-
-tree "Normal"
-	fallback
+		sequence
+			fallback
+				SeePlayer
+			InAlert
+		sequence
+			not SeePlayer
+			tree "Hope"
 		BeAlert
 
-tree "Chase"
+tree "Hope"
 	fallback
-		InAlert
+		While
+			sequence
+				Aware
+				not SeePlayer
+			sequence
+				GoBack
+				Wait 15.0
+				TurnOffAlarm

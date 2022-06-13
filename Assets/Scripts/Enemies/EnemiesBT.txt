@@ -12,7 +12,7 @@ tree "AwareOfPlayer"
 		sequence
 			while
 				not SeePlayer
-				AwareOfPlayer
+				Coiso
 			while
 				sequence
 					not SeePlayer

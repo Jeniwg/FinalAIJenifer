@@ -52,15 +52,15 @@ public class CameraMove : MonoBehaviour
     {
         animator.SetTrigger("StartAnim");
 
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(3.5f);
 
         followPlayer = true;
     }
 
     public void ExitGame()
     {
-        Application.Quit();
-        EditorApplication.Exit(0);
+        //Application.Quit();
+        //EditorApplication.Exit(0);
 
     }
 
