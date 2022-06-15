@@ -17,8 +17,7 @@ public class EventManager : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log("GO: " + go);
-        //Debug.Log("FORGETit: " + forgetIt);
+        //if receiving go start Alarm
         if (go)
         {
             alarm();
@@ -27,12 +26,14 @@ public class EventManager : MonoBehaviour
             
         }
 
+        //if receiving forgetIt start Forget
         if(forgetIt)
         {
             forget();
             forgetIt = false;
         }
 
+        //if receiving unlock start unlockAlarm
         if (unlock)
         {
             unlockAlarm();

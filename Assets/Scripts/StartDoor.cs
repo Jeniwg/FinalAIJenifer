@@ -8,6 +8,8 @@ public class StartDoor : MonoBehaviour
     private MeshRenderer cube;
     [SerializeField]
     private Collider cubeCollider;
+
+    //Open initial black door
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.tag == "Player")
@@ -17,6 +19,7 @@ public class StartDoor : MonoBehaviour
         }
     }
 
+    //Close black door cannot be openned again
     private void OnTriggerExit(Collider collider)
     {
         if (collider.gameObject.tag == "Player")

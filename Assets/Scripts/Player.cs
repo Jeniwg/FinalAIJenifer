@@ -41,16 +41,17 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-
+        //Rotation of camera
+        //Look where mouse is
         Vector3 mousePos = Input.mousePosition;
         mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.LookAt(new Vector3(mousePos.x, transform.position.y, mousePos.z));
 
+        //Movement
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = new Vector3(z, 0, -x);
-        //Debug.Log(move);
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
             controller.Move(move * speed * Time.deltaTime);
         }
 
+        //Shoot and cooldown
         if (Input.GetMouseButtonDown(0))
         {
             if ((Time.time - lastBullet > bulletRate))
@@ -71,6 +73,7 @@ public class Player : MonoBehaviour
 
         }
 
+        //Check if grounded if not move in y until its grounded
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (!isGrounded)
@@ -80,23 +83,26 @@ public class Player : MonoBehaviour
             transform.position = y;
         }
 
-
+        //RayCast
         Ray();
 
+        //If E and not looking door close last opened door
         if (Input.GetKeyDown(KeyCode.E) && lookingAtDoor == false && lastOpenedDoor != null)
         {
             Animator anim = lastOpenedDoor.GetComponentInParent<Animator>();
             anim.SetBool("isDoorOpen", false);
         }
 
+        //GameOver
         if (playerLife <= 0)
         {
             gameOver.SetActive(true);
-            Debug.Log("U DEAD!");
+            controller.enabled = false;
         }
 
     }
 
+    //Send Raycast. If player can OpenDoor open
     private void Ray()
     {
         Ray ray = new Ray(transform.position, transform.forward);
@@ -110,7 +116,6 @@ public class Player : MonoBehaviour
                 lookingAtDoor = true;
                 if (Input.GetKeyDown(KeyCode.E) && canOpenDoor == true)
                 {
-                    //Debug.Log("Open");
                     Animator anim = hit.collider.gameObject.GetComponentInParent<Animator>();
                     if (anim.GetBool("isDoorOpen") == false)
                     {
@@ -127,12 +132,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    //Instantiate bullet with PlayerBullet tag
     private void Shoot()
     {
         GameObject obj = Instantiate(bullet, bulletEmitter.transform.position, transform.rotation);
         obj.tag = "PlayerBullet";
     }
 
+    //Get a hit
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.transform.CompareTag("Enemy"))
@@ -141,6 +148,7 @@ public class Player : MonoBehaviour
         }
     }
 
+    //If in win area and enemy not in alarm
     private void OnTriggerEnter(Collider collider)
     {
         if(collider.CompareTag("WIN") && canOpenDoor == true)

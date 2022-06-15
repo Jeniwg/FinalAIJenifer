@@ -19,6 +19,7 @@ public class BlockDoor : MonoBehaviour
         EventManager.unlockAlarm -= OpenDoors;
     }
 
+    //When Event Alarm close door, change color to red and player can't open
     private void CloseDoors()
     {
         CanOpenDoors = false;
@@ -26,6 +27,7 @@ public class BlockDoor : MonoBehaviour
         animator.SetBool("isDoorOpen", false);
     }
 
+    //When Event unlockAlarm player can open doors and door's color change to green
     private void OpenDoors()
     {
         CanOpenDoors = true;

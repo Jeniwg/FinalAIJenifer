@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//And Ui script
 public class CameraMove : MonoBehaviour
 {
     [SerializeField]
@@ -24,12 +25,15 @@ public class CameraMove : MonoBehaviour
 
     private bool followPlayer = false;
 
+    //Initial position
     private void Start()
     {
         settings.orthographicSize = 20;
         gameObject.transform.position = new Vector3(25, 30, -4);
         playerControl.enabled = false;
     }
+
+    //FollowPlayer
     void LateUpdate()
     {
         if (followPlayer)
@@ -41,12 +45,14 @@ public class CameraMove : MonoBehaviour
         }
     }
 
+    //Start camera movement from objective to inicial pose
     public void StartGame()
     {
         mainMenu.SetActive(false);
         StartCoroutine("CutScene");
     }
 
+    //when animation end player can play
     private IEnumerator CutScene()
     {
         animator.SetTrigger("StartAnim");
@@ -56,6 +62,7 @@ public class CameraMove : MonoBehaviour
         followPlayer = true;
     }
 
+    //Exit
     public void ExitGame()
     {
         Application.Quit();
@@ -63,6 +70,7 @@ public class CameraMove : MonoBehaviour
 
     }
 
+    //Reload
     public void ReloadGame()
     {
         win.SetActive(false);

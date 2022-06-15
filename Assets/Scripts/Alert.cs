@@ -28,6 +28,7 @@ public class Alert : MonoBehaviour
         EventManager.forget -= StopAlert;
     }
 
+    //When Event Alarm start animation of redlights
     private void AlternColor()
     {
         isInAlert = true;
@@ -35,6 +36,7 @@ public class Alert : MonoBehaviour
         animator.SetBool("Alert", true);
     }
 
+    //When Event forget end animation of redlights
     private void StopAlert()
     {
         isInAlert = false;

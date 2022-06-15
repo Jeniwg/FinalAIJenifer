@@ -22,8 +22,6 @@ public class EnemiesTasksScript : MonoBehaviour
     private float bulletRate = 0.3f;
     [SerializeField]
     private float life = 10;
-    [SerializeField]
-    private BlockDoor door;
     private float lastBullet;
     private Vector3 InicialPos;
     private RaycastHit hit;
@@ -33,8 +31,8 @@ public class EnemiesTasksScript : MonoBehaviour
     private bool canChange = true;
     private Vector3 oldPos;
     private float positionBlockTimer = 2f;
-
-
+    private bool change = false;
+    private bool check = false;
 
     private void Start()
     {
@@ -46,12 +44,12 @@ public class EnemiesTasksScript : MonoBehaviour
 
     private void Update()
     {
-        // Debug.Log(alertOverr);
         if (life <= 0)
         {
             Destroy(this.gameObject);
         }
     }
+
     void OnEnable()
     {
         EventManager.alarm += GetPlayer;
@@ -64,6 +62,7 @@ public class EnemiesTasksScript : MonoBehaviour
         EventManager.forget -= ForgetPlayer;
     }
 
+    //When Event Alarm start GetPlayer
     private void GetPlayer()
     {
         alertOverr = true;
@@ -71,12 +70,13 @@ public class EnemiesTasksScript : MonoBehaviour
         this.aware = true;
     }
 
+    //When Event Forget forgetplayer
     private void ForgetPlayer()
     {
-        //Debug.Log("FORGETPLAYER");
         alertOverr = false;
     }
 
+    //raycast if see player get position and make aware of player
     [Task]
     private bool SeePlayer()
     {
@@ -92,17 +92,18 @@ public class EnemiesTasksScript : MonoBehaviour
         return false;
     }
 
+    //Indicate if Event alarm is on
     [Task]
     private bool AlertOverride()
     {
         if (alertOverr)
         {
-            //alertOverr = false;
             return true;
         }
         return false;
     }
 
+    //Indicate if the enemy is aware of the player
     [Task]
     private bool Aware()
     {
@@ -116,17 +117,21 @@ public class EnemiesTasksScript : MonoBehaviour
 
     }
 
+
     [Task]
     private void MoveRandom()
     {
         aware = false;
         RandomPos();
         agent.destination = randomPosition;
+
+        //if close of randomdestination can change to a new random location
         if (Vector3.Distance(agent.transform.position, randomPosition) <= 1f)
         {
             canChange = true;
         }
 
+        //Verification if enemy stay in same position for 2sec change position
         if (agent.transform.position == oldPos)
         {
             positionBlockTimer -= Time.deltaTime;
@@ -136,10 +141,13 @@ public class EnemiesTasksScript : MonoBehaviour
                 positionBlockTimer = 2f;
             }
         }
+
         oldPos = agent.transform.position;
         Task.current.Succeed();
     }
 
+    //If canChange position get new position in a sphere, 8 of distance
+    //if position is out (infinity) new position
     private void RandomPos()
     {
         if (canChange)
@@ -153,6 +161,8 @@ public class EnemiesTasksScript : MonoBehaviour
         }
     }
 
+    //Chase player and look at him
+    //Shoot if cooldown end
     [Task]
     private void Chase()
     {
@@ -172,6 +182,8 @@ public class EnemiesTasksScript : MonoBehaviour
         Task.current.Succeed();
     }
 
+    //Tower Chasing Player and looking at him start Event Alarm
+    //Shoot when cooldown ends
     [Task]
     private void InAlert()
     {
@@ -191,8 +203,7 @@ public class EnemiesTasksScript : MonoBehaviour
         Task.current.Succeed();
     }
 
-    private bool change = false;
-    private bool check = false;
+    //Search arround last player position seen 
     [Task]
     private void Panic()
     {
@@ -216,6 +227,8 @@ public class EnemiesTasksScript : MonoBehaviour
             StartCoroutine("Change");
         }
     }
+
+    //Aware change to false
     private IEnumerator Change()
     {
         yield return new WaitForSeconds(15);
@@ -224,20 +237,20 @@ public class EnemiesTasksScript : MonoBehaviour
         aware = false;
     }
 
+    //Normal state of towwer wait to see player 
     [Task]
     private void BeAlert()
     {
         agent.destination = InicialPos;
-        //EventManager.forgetIt = true;
         alertOverr = false;
         if (SeePlayer())
         {
-            Debug.Log("INBEALERT");
             Task.current.Succeed();
         }
         Task.current.Fail();
     }
 
+    //When 15 sec pass unlock doors
     [Task]
     private void TurnOffAlarm()
     {
@@ -245,6 +258,7 @@ public class EnemiesTasksScript : MonoBehaviour
         aware = false;
     }
 
+    //Go back to inicial position and forget player
     [Task]
     private void GoBack()
     {
@@ -252,8 +266,8 @@ public class EnemiesTasksScript : MonoBehaviour
         EventManager.forgetIt = true;
         Task.current.Succeed();
     }
-   
 
+    //Get ramdom point in shepher casted in origin
     private Vector3 RandomNavSphere(Vector3 origin, float distance, int layermask)
     {
         Vector3 randomDirection = UnityEngine.Random.insideUnitSphere * distance;
@@ -267,12 +281,14 @@ public class EnemiesTasksScript : MonoBehaviour
         return navHit.position;
     }
 
+    //Instantiate of bullet with Enemy tag
     private void Shoot()
     {
         GameObject obj = Instantiate(bullet, bulletEmitter.transform.position, transform.rotation);
         obj.tag = "Enemy";
     }
 
+    //If hit by player take damage
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "PlayerBullet")
