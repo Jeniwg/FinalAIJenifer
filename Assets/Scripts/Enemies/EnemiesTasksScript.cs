@@ -228,7 +228,7 @@ public class EnemiesTasksScript : MonoBehaviour
     private void BeAlert()
     {
         agent.destination = InicialPos;
-        EventManager.forgetIt = true;
+        //EventManager.forgetIt = true;
         alertOverr = false;
         if (SeePlayer())
         {
@@ -249,6 +249,7 @@ public class EnemiesTasksScript : MonoBehaviour
     private void GoBack()
     {
         agent.destination = InicialPos;
+        EventManager.forgetIt = true;
         Task.current.Succeed();
     }
    

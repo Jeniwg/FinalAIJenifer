@@ -206,9 +206,9 @@ NavMeshAgent:
   m_GameObject: {fileID: 3777175066317613590}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.2
+  m_Radius: 0.4
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 3
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -232,16 +232,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scripts:
-  - {fileID: 4900000, guid: 807a8ca68f64f9f409239e43824e9f65, type: 3}
-  - {fileID: 4900000, guid: 3ff13208fb3ec874cb89e3c93baf410a, type: 3}
+  - {fileID: 4900000, guid: dfeff865402fcf342bd17cc4fc395834, type: 3}
   autoReset: 1
   tickOn: 0
   sourceInfos:
-  - isFoldout: 1
-    breakPoints: 
-    breakPointStatuses: 
-    collapsedLines: 
-    btScript: 
   - isFoldout: 1
     breakPoints: 
     breakPointStatuses: 
@@ -261,7 +255,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   agent: {fileID: 3777175066317613608}
-  roamRadius: 10
+  roamRadius: 5
   alertOverr: 0
   bullet: {fileID: 978876306880627578, guid: 946520e01eef5e8439ac39f926aab208, type: 3}
   bulletEmitter: {fileID: 3777175066351342698}

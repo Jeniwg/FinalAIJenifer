@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.SceneManagement;
 
 public class CameraMove : MonoBehaviour
@@ -59,8 +58,8 @@ public class CameraMove : MonoBehaviour
 
     public void ExitGame()
     {
-        //Application.Quit();
-        //EditorApplication.Exit(0);
+        Application.Quit();
+        UnityEditor.EditorApplication.isPlaying = false;
 
     }
 

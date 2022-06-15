@@ -125,9 +125,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8725649025556488671}
-  m_LocalRotation: {x: -0, y: -1, z: -0, w: 0.0000002533197}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: -4.69, y: 0.41, z: 0.18}
-  m_LocalScale: {x: 0.5, y: 0.4, z: 0.5}
+  m_LocalScale: {x: 0.8, y: 0.4, z: 0.8}
   m_Children:
   - {fileID: 8725649024262840841}
   m_Father: {fileID: 0}
@@ -207,7 +207,7 @@ NavMeshAgent:
   m_AgentTypeID: 0
   m_Radius: 0.2
   m_Speed: 3.5
-  m_Acceleration: 8
+  m_Acceleration: 3
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0
@@ -231,16 +231,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scripts:
-  - {fileID: 4900000, guid: 807a8ca68f64f9f409239e43824e9f65, type: 3}
   - {fileID: 4900000, guid: 69da19dbd2810e642b8ad4de8fc5244c, type: 3}
   autoReset: 1
   tickOn: 0
   sourceInfos:
-  - isFoldout: 1
-    breakPoints: 
-    breakPointStatuses: 
-    collapsedLines: 
-    btScript: 
   - isFoldout: 1
     breakPoints: 
     breakPointStatuses: 
@@ -260,7 +254,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   agent: {fileID: 8725649025556488642}
-  roamRadius: 10
+  roamRadius: 5
   alertOverr: 0
   bullet: {fileID: 978876306880627578, guid: 946520e01eef5e8439ac39f926aab208, type: 3}
   bulletEmitter: {fileID: 8725649025893538694}
