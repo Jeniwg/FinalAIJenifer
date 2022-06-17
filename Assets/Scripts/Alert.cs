@@ -10,7 +10,6 @@ public class Alert : MonoBehaviour
     [SerializeField]
     private Animator animator;
 
-    private bool isInAlert = false;
     void Start()
     {
         alert.enabled = false;
@@ -19,19 +18,18 @@ public class Alert : MonoBehaviour
     void OnEnable()
     {
         EventManager.alarm += AlternColor;
-        EventManager.forget += StopAlert;
+        EventManager.unlockAlarm += StopAlert;
     }
 
     void OnDisable()
     {
         EventManager.alarm -= AlternColor;
-        EventManager.forget -= StopAlert;
+        EventManager.unlockAlarm -= StopAlert;
     }
 
     //When Event Alarm start animation of redlights
     private void AlternColor()
     {
-        isInAlert = true;
         alert.enabled = true;
         animator.SetBool("Alert", true);
     }
@@ -39,7 +37,6 @@ public class Alert : MonoBehaviour
     //When Event forget end animation of redlights
     private void StopAlert()
     {
-        isInAlert = false;
         alert.enabled = false;
         animator.SetBool("Alert", false);
     }

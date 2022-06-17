@@ -193,8 +193,7 @@ public class EnemiesTasksScript : MonoBehaviour
         aux2.y = 0;
         transform.forward = aux1 - aux2;
         agent.destination = playerLastPosition;
-        Debug.Log("ININALERT");
-        EventManager.go = true;
+        EventManager.Go();
         if ((Time.time - lastBullet > bulletRate))
         {
             Shoot();
@@ -254,7 +253,7 @@ public class EnemiesTasksScript : MonoBehaviour
     [Task]
     private void TurnOffAlarm()
     {
-        EventManager.unlock = true;
+        EventManager.Unlock();
         aware = false;
     }
 
@@ -263,7 +262,7 @@ public class EnemiesTasksScript : MonoBehaviour
     private void GoBack()
     {
         agent.destination = InicialPos;
-        EventManager.forgetIt = true;
+        EventManager.ForgetIt();
         Task.current.Succeed();
     }
 
